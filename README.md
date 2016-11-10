@@ -23,17 +23,17 @@ Build and local installation for OpenCV
 cd third_party\opencv
 mkdir build
 cd build
-cmake ../ -DCMAKE_INSTALL_PREFIX=..\..\opencvlib -DBUILD_SHARED_LIBS=Off -DBUILD_WITH_STATIC_CRT=Off
+cmake ..\ -DCMAKE_INSTALL_PREFIX=..\..\opencvlib -DBUILD_SHARED_LIBS=Off -DBUILD_WITH_STATIC_CRT=Off
 cmake --build . --config Release
 cmake --build . --config Release --target install
 ```
 Building lua library
 ```bash
-cd ../../ # return to root of source tree
+cd ..\..\ # return to root of source tree
 mkdir build
 cd build
-cmake ../ -DCMAKE_BUILD_TYPE=Release
-cmake --build .
+cmake ..\
+cmake --build . --config Release
 ```
 Outputed cv.dll into lua.cpath directory.
 And execute sample 
