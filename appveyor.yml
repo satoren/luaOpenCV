@@ -17,6 +17,7 @@ cache:
 build_script:
 - ps: >-
     git submodule update --init --recursive
+    
     if(!(Test-Path -Path third_party\opencvlib )){
       cd third_party\opencv
       if(!(Test-Path -Path build )){
