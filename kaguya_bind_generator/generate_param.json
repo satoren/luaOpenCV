@@ -1,0 +1,75 @@
+{
+    "module_name": "cv",
+    "clang_args": [
+        "-I./build/opencv/include",
+        "-std=c++11"
+    ],
+    "class":{
+    "ignore_patterns": [
+        "^cv::Mat$",
+        "^cv::Range$",
+        "^cv::Point$",
+        "^cv::Size$",
+        "cv::_OutputArray",
+        "cv::_InputArray",
+        "cv::_InputOutputArray",        
+        "cv::String",
+        "cv::PixelOperationWrapper",
+        "cv::DetectionBasedTracker"
+    ]
+    },
+
+    "stringify_class":{
+    "match_patterns": [
+    ],
+    "ignore_patterns": [
+        ".*"
+    ]
+    },
+
+    "function":{
+    "match_patterns": [
+        "^cv::[^:]*\\("
+    ],
+    "ignore_patterns": [
+        "operator",
+        "cv::swap",
+        "cv::format",
+        "cv::setMouseCallback",
+        "cv::startLoop",
+        "cv::createTrackbar",
+        "setOpenGlDrawCallback",
+        "cv::createButton",
+        "cv::errorNoReturn",
+        "cv::redirectError",
+        "cv::seqPopMulti",
+        "cv::cvStartWriteRawData_Base64",
+        "cv::cvWriteRawData_Base64",
+        "cv::cvEndWriteRawData_Base64",
+        "cv::cvWriteMat_Base64",
+        "cv::cvWriteMatND_Base64"
+    ]
+    },
+    "class_member":{
+    "match_patterns": [
+        ".*"
+    ],
+    "ignore_patterns": [
+        "cv::Mat::step",
+        "cv::UMat::step",
+        "cv::MatConstIterator::MatConstIterator\\(const class cv::Mat \\*, const int \\*\\)",
+        "cv::SparseMatIterator::SparseMatIterator\\(class cv::SparseMat \\*, const int \\*\\)"
+    ]
+    },
+    "match_patterns": [
+        "^cv::[^:]*$"
+    ],
+    "ignore_patterns": [
+    ],
+    "out_parameter_type_mapping": {
+        "OutputArray": "Mat",
+        "OutputArrayOfArrays": "std::vecot<Mat>"
+    },
+    "wrapper_namespace_prefix": "gen_wrap_",
+    "manual_binding_file_name": "manual_bind.inc"
+}

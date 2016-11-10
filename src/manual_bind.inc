@@ -1,0 +1,1 @@
+kaguya_manual_bind();

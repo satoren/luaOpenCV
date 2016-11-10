@@ -1,0 +1,35 @@
+if(NOT LOCAL_LUA_DIRECTORY)
+   set(LOCAL_LUA_DIRECTORY ${LUA_SEARCH_LIB_NAME})
+endif()
+set(THIRD_PARTY_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/third_party/)
+if(LOCAL_LUA_DIRECTORY)
+  #search local directory
+  if(EXISTS ${THIRD_PARTY_DIR}/${LOCAL_LUA_DIRECTORY})
+    file(COPY ${THIRD_PARTY_DIR}Lua-CMakeLists.txt DESTINATION ${THIRD_PARTY_DIR}/${LOCAL_LUA_DIRECTORY})
+    file(RENAME ${THIRD_PARTY_DIR}/${LOCAL_LUA_DIRECTORY}/Lua-CMakeLists.txt ${THIRD_PARTY_DIR}/${LOCAL_LUA_DIRECTORY}/CMakeLists.txt)
+    add_subdirectory(${THIRD_PARTY_DIR}/${LOCAL_LUA_DIRECTORY})
+
+    set(LUA_INCLUDE_DIRS ${THIRD_PARTY_DIR}/${LOCAL_LUA_DIRECTORY}/src)
+    if(NOT EXISTS ${LUA_INCLUDE_DIRS}/lua.h)
+      set(LUA_INCLUDE_DIRS ${THIRD_PARTY_DIR}/${LOCAL_LUA_DIRECTORY}/include)
+    endif()
+   set(LUA_LIBRARIES liblua)
+  endif()
+endif()
+
+if(NOT LUA_INCLUDE_DIRS)
+  find_package(PkgConfig)
+  set(LUA_SEARCHVERS ${LUA_SEARCH_LIB_NAME} lua5.3 lua5.2 luajit lua5.1 lua)
+  foreach(modulename ${LUA_SEARCHVERS})
+    pkg_search_module(LUA ${modulename})
+  endforeach(modulename)
+endif(NOT LUA_INCLUDE_DIRS)
+
+if(NOT LUA_INCLUDE_DIRS)
+# message(SEND_ERROR "Can't find lua library")
+endif(NOT LUA_INCLUDE_DIRS)
+
+
+if(NOT EXISTS ${LUA_INCLUDE_DIRS}/lua.h)
+  message(SEND_ERROR "Can't find lua.h in ${LUA_INCLUDE_DIRS}")
+endif()
