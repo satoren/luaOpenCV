@@ -26,7 +26,6 @@ else(MSVC)
 endif(MSVC)
 
 add_library(cv SHARED src/raw_bind.cc)
-target_compile_definitions(cv PRIVATE "-DKAGUYA_DYNAMIC_LIB")
 target_link_libraries(cv ${OpenCV_LIBS} ${LUA_LIBRARIES})
 
 
