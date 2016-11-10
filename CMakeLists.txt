@@ -12,15 +12,17 @@ include(cmake/FindLua.cmake)
 set(CMAKE_PREFIX_PATH third_party/opencvlib)
 FIND_PACKAGE(OpenCV 3.1.0 REQUIRED)
 
-include_directories(${LUA_INCLUDE_DIRS})
+include_directories(BEFORE ${LUA_INCLUDE_DIRS})
 link_directories(${LUA_LIBRARY_DIRS})
 
 include_directories(third_party/kaguya/include)
-include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(BEFORE ${OpenCV_INCLUDE_DIRS})
 
 
 if(MSVC)
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+else(MSVC)
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif(MSVC)
 
 add_library(cv SHARED src/raw_bind.cc)

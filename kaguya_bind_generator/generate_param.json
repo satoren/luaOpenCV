@@ -34,6 +34,7 @@
     "ignore_patterns": [
         "operator",
         "cv::swap",
+        "ogl::Texture2D",
         "cv::format",
         "cv::setMouseCallback",
         "cv::startLoop",
@@ -55,6 +56,13 @@
         ".*"
     ],
     "ignore_patterns": [
+        ".*CvFileStorage.*",
+        ".*CvFileNode.*",
+        "cv::FileNode::fs",
+        "cv::FileStorage::operator\\*",
+        "cv::FileStorage::fs",
+        "cv::FileNodeIterator::fs",     
+        "ogl::Texture2D",
         "cv::Mat::step",
         "cv::UMat::step",
         "cv::MatConstIterator::MatConstIterator\\(const class cv::Mat \\*, const int \\*\\)",

@@ -285,6 +285,8 @@ auto displayOverlay = displayOverlay_wrap_obj();
 identity<void (*)(InputArray,InputArray,OutputArray)>::type LUT = &cv::LUT;
 identity<void (*)(InputArray,OutputArray)>::type convertPointsToHomogeneous = &cv::convertPointsToHomogeneous;
 identity<void (*)(InputArray,Point2f &,float &)>::type minEnclosingCircle = &cv::minEnclosingCircle;
+KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( estimateAffinePartial2D_wrap_obj, cv::estimateAffinePartial2D,  2, 8, cv::Mat (*)(InputArray,InputArray,OutputArray,int,double,size_t,double,size_t));
+auto estimateAffinePartial2D = estimateAffinePartial2D_wrap_obj();
 KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( rectangle_wrap_obj0, cv::rectangle,  4, 7, void (*)(InputOutputArray,Point,Point,const Scalar &,int,int,int));
 auto rectangle0 = rectangle_wrap_obj0();
 KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( rectangle_wrap_obj1, cv::rectangle,  3, 6, void (*)(cv::Mat &,Rect,const Scalar &,int,int,int));
@@ -393,9 +395,7 @@ KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( accumulateSquare_wrap_obj, cv::accumul
 auto accumulateSquare = accumulateSquare_wrap_obj();
 identity<void (*)(CvSeq *,CvSlice)>::type seqRemoveSlice = &cv::seqRemoveSlice;
 identity<float (*)(float)>::type cubeRoot = &cv::cubeRoot;
-identity<void (*)(const cv::String &,InputArray)>::type imshow0 = &cv::imshow;
-identity<void (*)(const cv::String &,const ogl::Texture2D &)>::type imshow1 = &cv::imshow;
-auto imshow = kaguya::overload(imshow0,imshow1);
+identity<void (*)(const cv::String &,InputArray)>::type imshow = &cv::imshow;
 KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( filterSpeckles_wrap_obj, cv::filterSpeckles,  4, 5, void (*)(InputOutputArray,double,int,double,InputOutputArray));
 auto filterSpeckles = filterSpeckles_wrap_obj();
 KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( fastNlMeansDenoisingColoredMulti_wrap_obj, cv::fastNlMeansDenoisingColoredMulti,  4, 8, void (*)(InputArrayOfArrays,OutputArray,int,int,float,float,int,int));
@@ -696,6 +696,8 @@ identity<void (*)(InputArray,OutputArray,int)>::type applyColorMap = &cv::applyC
 KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( dct_wrap_obj, cv::dct,  2, 3, void (*)(InputArray,OutputArray,int));
 auto dct = dct_wrap_obj();
 identity<void (*)(InputArray,InputArray,OutputArray)>::type magnitude = &cv::magnitude;
+KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( estimateAffine2D_wrap_obj, cv::estimateAffine2D,  2, 8, cv::Mat (*)(InputArray,InputArray,OutputArray,int,double,size_t,double,size_t));
+auto estimateAffine2D = estimateAffine2D_wrap_obj();
 KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( imencode_wrap_obj, cv::imencode,  3, 4, bool (*)(const cv::String &,InputArray,std::vector<uchar> &,const std::vector<int> &));
 auto imencode = imencode_wrap_obj();
 KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( createNormHistogramCostExtractor_wrap_obj, cv::createNormHistogramCostExtractor,  0, 3, Ptr<cv::HistogramCostExtractor> (*)(int,int,float));
@@ -1679,6 +1681,7 @@ identity<int (cv::Subdiv2D::*)(Point2f,int &,int &)>::type locate = &cv::Subdiv2
 identity<void (cv::Subdiv2D::*)(std::vector<Vec4f> &) const>::type getEdgeList = &cv::Subdiv2D::getEdgeList;
 KAGUYA_MEMBER_FUNCTION_OVERLOADS_WITH_SIGNATURE( findNearest_wrap_obj , cv::Subdiv2D , findNearest,  1, 2, int (cv::Subdiv2D::*)(Point2f,Point2f *));
 auto findNearest = findNearest_wrap_obj();
+identity<void (cv::Subdiv2D::*)(std::vector<int> &) const>::type getLeadingEdgeList = &cv::Subdiv2D::getLeadingEdgeList;
 KAGUYA_MEMBER_FUNCTION_OVERLOADS_WITH_SIGNATURE( edgeDst_wrap_obj , cv::Subdiv2D , edgeDst,  1, 2, int (cv::Subdiv2D::*)(int,Point2f *) const);
 auto edgeDst = edgeDst_wrap_obj();
 identity<void (cv::Subdiv2D::*)(Rect)>::type initDelaunay = &cv::Subdiv2D::initDelaunay;
@@ -1995,6 +1998,11 @@ identity<Ptr<detail::RotationWarper> (cv::PlaneWarper::*)(float) const>::type cr
 }// end of namespace PlaneWarper
 }// end of namespace cv
 namespace gen_wrap_cv{
+namespace gen_wrap_AffineWarper{
+identity<Ptr<detail::RotationWarper> (cv::AffineWarper::*)(float) const>::type create = &cv::AffineWarper::create;
+}// end of namespace AffineWarper
+}// end of namespace cv
+namespace gen_wrap_cv{
 namespace gen_wrap_CylindricalWarper{
 identity<Ptr<detail::RotationWarper> (cv::CylindricalWarper::*)(float) const>::type create = &cv::CylindricalWarper::create;
 }// end of namespace CylindricalWarper
@@ -2082,6 +2090,8 @@ identity<const Ptr<detail::FeaturesMatcher> (cv::Stitcher::*)() const>::type fea
 auto featuresMatcher = kaguya::overload(featuresMatcher0,featuresMatcher1);
 identity<void (cv::Stitcher::*)(Ptr<detail::BundleAdjusterBase>)>::type setBundleAdjuster = &cv::Stitcher::setBundleAdjuster;
 identity<void (cv::Stitcher::*)(double)>::type setPanoConfidenceThresh = &cv::Stitcher::setPanoConfidenceThresh;
+KAGUYA_FUNCTION_OVERLOADS_WITH_SIGNATURE( create_wrap_obj, cv::Stitcher::create,  0, 2, Ptr<cv::Stitcher> (*)(cv::Stitcher::Mode,bool));
+auto create = create_wrap_obj();
 identity<void (cv::Stitcher::*)(bool)>::type setWaveCorrection = &cv::Stitcher::setWaveCorrection;
 identity<void (cv::Stitcher::*)(Ptr<detail::FeaturesFinder>)>::type setFeaturesFinder = &cv::Stitcher::setFeaturesFinder;
 identity<Ptr<detail::SeamFinder> (cv::Stitcher::*)()>::type seamFinder0 = &cv::Stitcher::seamFinder;
@@ -2390,6 +2400,7 @@ using namespace kaguya;
   function("LUT", gen_wrap_cv::LUT);
   function("convertPointsToHomogeneous", gen_wrap_cv::convertPointsToHomogeneous);
   function("minEnclosingCircle", gen_wrap_cv::minEnclosingCircle);
+  function("estimateAffinePartial2D", gen_wrap_cv::estimateAffinePartial2D);
   function("rectangle", gen_wrap_cv::rectangle);
   function("undistortPoints", gen_wrap_cv::undistortPoints);
   function("matMulDeriv", gen_wrap_cv::matMulDeriv);
@@ -2590,6 +2601,7 @@ using namespace kaguya;
   function("applyColorMap", gen_wrap_cv::applyColorMap);
   function("dct", gen_wrap_cv::dct);
   function("magnitude", gen_wrap_cv::magnitude);
+  function("estimateAffine2D", gen_wrap_cv::estimateAffine2D);
   function("imencode", gen_wrap_cv::imencode);
   function("createNormHistogramCostExtractor", gen_wrap_cv::createNormHistogramCostExtractor);
   function("max", gen_wrap_cv::max);
@@ -2921,7 +2933,7 @@ using namespace kaguya;
     .property("s", &cv::MatExpr::s)
   ;
   class_<cv::FileStorage>("FileStorage")
-    .constructors<void (),void (const cv::String &, int, const cv::String &),void (CvFileStorage *, bool)>()
+    .constructors<void (),void (const cv::String &, int, const cv::String &)>()
     .function("write", gen_wrap_cv::gen_wrap_FileStorage::write)
     .function("releaseAndGetString", gen_wrap_cv::gen_wrap_FileStorage::releaseAndGetString)
     .function("isOpened", gen_wrap_cv::gen_wrap_FileStorage::isOpened)
@@ -2933,14 +2945,12 @@ using namespace kaguya;
     .function("root", gen_wrap_cv::gen_wrap_FileStorage::root)
     .function("writeRaw", gen_wrap_cv::gen_wrap_FileStorage::writeRaw)
     .function("open", gen_wrap_cv::gen_wrap_FileStorage::open)
-    .class_function("__mul", kaguya::overload((CvFileStorage * (cv::FileStorage::*)())&cv::FileStorage::operator*,(const CvFileStorage * (cv::FileStorage::*)() const)&cv::FileStorage::operator*))
-    .property("fs", &cv::FileStorage::fs)
     .property("elname", &cv::FileStorage::elname)
     .property("structs", &cv::FileStorage::structs)
     .property("state", &cv::FileStorage::state)
   ;
   class_<cv::FileNode>("FileNode")
-    .constructors<void (),void (const CvFileStorage *, const CvFileNode *),void (const cv::FileNode &)>()
+    .constructors<void (),void (const cv::FileNode &)>()
     .function("readRaw", gen_wrap_cv::gen_wrap_FileNode::readRaw)
     .function("isSeq", gen_wrap_cv::gen_wrap_FileNode::isSeq)
     .function("name", gen_wrap_cv::gen_wrap_FileNode::name)
@@ -2960,14 +2970,12 @@ using namespace kaguya;
     .function("size", gen_wrap_cv::gen_wrap_FileNode::size)
     .function("isNone", gen_wrap_cv::gen_wrap_FileNode::isNone)
     .class_function("__mul", kaguya::overload((CvFileNode * (cv::FileNode::*)())&cv::FileNode::operator*,(const CvFileNode * (cv::FileNode::*)() const)&cv::FileNode::operator*))
-    .property("fs", &cv::FileNode::fs)
     .property("node", &cv::FileNode::node)
   ;
   class_<cv::FileNodeIterator>("FileNodeIterator")
-    .constructors<void (),void (const CvFileStorage *, const CvFileNode *, size_t),void (const cv::FileNodeIterator &)>()
+    .constructors<void (),void (const cv::FileNodeIterator &)>()
     .function("readRaw", gen_wrap_cv::gen_wrap_FileNodeIterator::readRaw)
     .class_function("__mul", &cv::FileNodeIterator::operator*)
-    .property("fs", &cv::FileNodeIterator::fs)
     .property("container", &cv::FileNodeIterator::container)
     .property("reader", &cv::FileNodeIterator::reader)
     .property("remaining", &cv::FileNodeIterator::remaining)
@@ -3431,6 +3439,7 @@ using namespace kaguya;
     .function("locate", gen_wrap_cv::gen_wrap_Subdiv2D::locate)
     .function("getEdgeList", gen_wrap_cv::gen_wrap_Subdiv2D::getEdgeList)
     .function("findNearest", gen_wrap_cv::gen_wrap_Subdiv2D::findNearest)
+    .function("getLeadingEdgeList", gen_wrap_cv::gen_wrap_Subdiv2D::getLeadingEdgeList)
     .function("edgeDst", gen_wrap_cv::gen_wrap_Subdiv2D::edgeDst)
     .function("initDelaunay", gen_wrap_cv::gen_wrap_Subdiv2D::initDelaunay)
     .function("getVertex", gen_wrap_cv::gen_wrap_Subdiv2D::getVertex)
@@ -3693,6 +3702,10 @@ using namespace kaguya;
     .constructor<>()
     .function("create", gen_wrap_cv::gen_wrap_PlaneWarper::create)
   ;
+  class_<cv::AffineWarper,cv::WarperCreator>("AffineWarper")
+    .constructor<>()
+    .function("create", gen_wrap_cv::gen_wrap_AffineWarper::create)
+  ;
   class_<cv::CylindricalWarper,cv::WarperCreator>("CylindricalWarper")
     .constructor<>()
     .function("create", gen_wrap_cv::gen_wrap_CylindricalWarper::create)
@@ -3756,6 +3769,7 @@ using namespace kaguya;
     .function("featuresMatcher", gen_wrap_cv::gen_wrap_Stitcher::featuresMatcher)
     .function("setBundleAdjuster", gen_wrap_cv::gen_wrap_Stitcher::setBundleAdjuster)
     .function("setPanoConfidenceThresh", gen_wrap_cv::gen_wrap_Stitcher::setPanoConfidenceThresh)
+    .class_function("create", gen_wrap_cv::gen_wrap_Stitcher::create)
     .function("setWaveCorrection", gen_wrap_cv::gen_wrap_Stitcher::setWaveCorrection)
     .function("setFeaturesFinder", gen_wrap_cv::gen_wrap_Stitcher::setFeaturesFinder)
     .function("seamFinder", gen_wrap_cv::gen_wrap_Stitcher::seamFinder)
@@ -4403,6 +4417,7 @@ using namespace kaguya;
   constant("WND_PROP_AUTOSIZE", cv::WND_PROP_AUTOSIZE);
   constant("WND_PROP_ASPECT_RATIO", cv::WND_PROP_ASPECT_RATIO);
   constant("WND_PROP_OPENGL", cv::WND_PROP_OPENGL);
+  constant("WND_PROP_VISIBLE", cv::WND_PROP_VISIBLE);
   constant("EVENT_MOUSEMOVE", cv::EVENT_MOUSEMOVE);
   constant("EVENT_LBUTTONDOWN", cv::EVENT_LBUTTONDOWN);
   constant("EVENT_RBUTTONDOWN", cv::EVENT_RBUTTONDOWN);
