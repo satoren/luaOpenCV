@@ -12,22 +12,14 @@ install:
       7z x lua-5.3.3.tar
     }
 cache:
-- third_party\lua-5.3.3
-- third_party\opencvlib
+- third_party/lua-5.3.3
+- third_party/opencvlib
 build_script:
 - ps: >-
     git submodule update --init --recursive
     
-    if(!(Test-Path -Path third_party\opencvlib )){
-      cd third_party\opencv
-      if(!(Test-Path -Path build )){
-        mkdir build
-      }
-      cd build
-      cmake ../ -DCMAKE_INSTALL_PREFIX=..\..\opencvlib -DBUILD_SHARED_LIBS=Off -DBUILD_WITH_STATIC_CRT=Off -G $env:CMAKE_GEN_TYPE
-      cmake --build . --config Release
-      cmake --build . --config Release --target install
-      cd ..\..\..\
+    if(!(Test-Path -Path third_party/opencvlib)){
+      ./opencv_build.bat
     }
     if(!(Test-Path -Path build )){
       mkdir build
