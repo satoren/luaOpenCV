@@ -7,9 +7,11 @@ install:
 - ps: >-
     if(!(Test-Path -Path third_party\lua-5.3.3 )){
       choco install 7zip.commandline
+      cd third_party
       Invoke-WebRequest  http://www.lua.org/ftp/lua-5.3.3.tar.gz -OutFile lua-5.3.3.tar.gz
       7z x lua-5.3.3.tar.gz
       7z x lua-5.3.3.tar
+      cd ../
     }
 cache:
 - third_party/lua-5.3.3
