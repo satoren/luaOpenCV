@@ -19,7 +19,7 @@ env:
   - BUILD_TYPE=Release CXX_FLAGS=-std=c++11 LUALIB=lua5.2
 
 script:
-  - if [ ! -e third_party/opencvlib/OpenCVConfig.cmake ] ; then ./opencv_build.sh ; fi
+  - if [ ! -e third_party/opencvlib/OpenCVConfig.cmake ]; then ./opencv_build.sh; fi
   - cmake . -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DLUA_SEARCH_LIB_NAME=${LUALIB} 
   - cmake --build . 
   - CTEST_OUTPUT_ON_FAILURE=1 ctest

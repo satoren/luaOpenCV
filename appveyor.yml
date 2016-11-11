@@ -21,13 +21,17 @@ build_script:
     if(!(Test-Path -Path third_party/opencvlib)){
       ./opencv_build.bat
     }
+    
     if(!(Test-Path -Path build )){
       mkdir build
     }
 
     cd build
+
     cmake ../ -DCMAKE_BUILD_TYPE=Release
+
     cmake --build .
+
     cd build
 
     cmake ../ -G $env:CMAKE_GEN_TYPE -DLOCAL_LUA_DIRECTORY="lua-5.3.3"
