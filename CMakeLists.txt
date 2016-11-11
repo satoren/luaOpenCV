@@ -4,8 +4,8 @@ project(luaOpenCV)
 
 
 option(BUILD_TESTS "Builds the unit test" TRUE)
-option(LOCAL_LUA_DIRECTORY "local lua library directory" "lua-5.3.3")
-set(LOCAL_LUA_DIRECTORY "lua-5.3.3")
+option(LOCAL_LUA_DIRECTORY "local lua library directory" "third_party/lua-5.3.3")
+set(LOCAL_LUA_DIRECTORY "third_party/lua-5.3.3")
 
 include(cmake/FindLua.cmake)
 
