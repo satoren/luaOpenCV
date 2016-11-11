@@ -1,0 +1,6 @@
+[submodule "kaguya"]
+	shallow = true
+[submodule "googletest"]
+	shallow = true
+[submodule "opencv"]
+	shallow = true
