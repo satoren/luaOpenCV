@@ -15,14 +15,12 @@ install:
     }
 cache:
 - third_party/lua-5.3.3
-- third_party/opencvlib
+- third_party/opencv
 build_script:
 - ps: >-
     git submodule update --init --recursive
     
-    if(!(Test-Path -Path third_party/opencvlib)){
-      ./opencv_build.bat
-    }
+    ./opencv_build.bat
     
     if(!(Test-Path -Path build )){
       mkdir build
