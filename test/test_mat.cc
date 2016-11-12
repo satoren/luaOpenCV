@@ -22,8 +22,6 @@ TEST_F(LuaOpenCVTest, Mat_construct_from_cols_rows) {
   ASSERT_EQ(3, m1.rows);
   ASSERT_EQ(2, m1.dims);
   ASSERT_EQ(6, m1.depth());
-
-
 }
 TEST_F(LuaOpenCVTest, Mat_construct_with_dims) {
   const int sizes[] = {2, 2, 3, 4};
@@ -60,12 +58,10 @@ TEST_F(LuaOpenCVTest, Mat_construct_with_eye) {
   ASSERT_EQ(expected.cols, lua_["m1"]["cols"]);
   ASSERT_EQ(expected.rows, lua_["m1"]["rows"]);
   ASSERT_EQ(expected.dims, lua_["m1"]["dims"]);
-  for (int x = 0; x < expected.cols; x++)
-  {
-	  for (int y = 0; y < expected.cols; y++)
-	  {
-		  ASSERT_EQ(lua_["m1"][cv::Point(x, y)], expected.at<double>(x, y));
-	  }
+  for (int x = 0; x < expected.cols; x++) {
+    for (int y = 0; y < expected.cols; y++) {
+      ASSERT_EQ(lua_["m1"][cv::Point(x, y)], expected.at<double>(x, y));
+    }
   }
 }
 TEST_F(LuaOpenCVTest, Mat_construct_with_zeros) {
@@ -80,40 +76,35 @@ TEST_F(LuaOpenCVTest, Mat_construct_with_zeros) {
   ASSERT_EQ(expected.depth(), m1.depth());
   ASSERT_EQ(expected.size(), m1.size());
   ASSERT_EQ(to_string(expected), to_string(m1));
-  for (int x = 0; x < expected.cols; x++)
-  {
-	  for (int y = 0; y < expected.cols; y++)
-	  {
-		  cv::Vec<uint8_t, 3>  a = lua_["m1"][cv::Point(x, y)];
-		  cv::Vec<uint8_t, 3>  e = expected.at<cv::Vec<uint8_t, 3> >(x, y);
-		  ASSERT_EQ(e,a);
-	  }
+  for (int x = 0; x < expected.cols; x++) {
+    for (int y = 0; y < expected.cols; y++) {
+      cv::Vec<uint8_t, 3> a = lua_["m1"][cv::Point(x, y)];
+      cv::Vec<uint8_t, 3> e = expected.at<cv::Vec<uint8_t, 3> >(x, y);
+      ASSERT_EQ(e, a);
+    }
   }
 }
 TEST_F(LuaOpenCVTest, Mat_construct_with_ones) {
-	cv::Mat expected = cv::Mat::ones(3, 3, CV_8UC3);
-	ASSERT_TRUE(lua_("m1 = cv.Mat.ones(3,3,cv.CV_8UC3)"));
-	cv::Mat m1 = lua_["m1"];
-	ASSERT_EQ(expected.type(), m1.type());
-	ASSERT_EQ(expected.cols, m1.cols);
-	ASSERT_EQ(expected.rows, m1.rows);
-	ASSERT_EQ(expected.dims, m1.dims);
-	ASSERT_EQ(expected.channels(), m1.channels());
-	ASSERT_EQ(expected.depth(), m1.depth());
-	ASSERT_EQ(expected.size(), m1.size());
-	ASSERT_EQ(to_string(expected), to_string(m1));
-	ASSERT_EQ(3, m1.channels());
-	for (int x = 0; x < expected.cols; x++)
-	{
-		for (int y = 0; y < expected.cols; y++)
-		{
-			cv::Vec<uint8_t, 3>  a = lua_["m1"][cv::Point(x, y)];
-			cv::Vec<uint8_t, 3>  e = expected.at<cv::Vec<uint8_t, 3> >(x, y);
-			ASSERT_EQ(e, a);
-		}
-	}
+  cv::Mat expected = cv::Mat::ones(3, 3, CV_8UC3);
+  ASSERT_TRUE(lua_("m1 = cv.Mat.ones(3,3,cv.CV_8UC3)"));
+  cv::Mat m1 = lua_["m1"];
+  ASSERT_EQ(expected.type(), m1.type());
+  ASSERT_EQ(expected.cols, m1.cols);
+  ASSERT_EQ(expected.rows, m1.rows);
+  ASSERT_EQ(expected.dims, m1.dims);
+  ASSERT_EQ(expected.channels(), m1.channels());
+  ASSERT_EQ(expected.depth(), m1.depth());
+  ASSERT_EQ(expected.size(), m1.size());
+  ASSERT_EQ(to_string(expected), to_string(m1));
+  ASSERT_EQ(3, m1.channels());
+  for (int x = 0; x < expected.cols; x++) {
+    for (int y = 0; y < expected.cols; y++) {
+      cv::Vec<uint8_t, 3> a = lua_["m1"][cv::Point(x, y)];
+      cv::Vec<uint8_t, 3> e = expected.at<cv::Vec<uint8_t, 3> >(x, y);
+      ASSERT_EQ(e, a);
+    }
+  }
 }
-
 
 TEST_F(LuaOpenCVTest, Mat_initialize_with_ramdom) {
   cv::Mat nexpected = cv::Mat::eye(3, 3, CV_64F);
