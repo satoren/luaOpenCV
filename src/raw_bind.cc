@@ -4,112 +4,7 @@
 
 #include "bind_helper.hpp"
 
-namespace kaguya {
-using namespace cv;
-// ==============================================
-// Basic structures
-// ==============================================
-template <>
-struct lua_type_traits<cv::_InputArray>
-    : util::ConvertibleRegisterHelper<
-          cv::_InputArray, Mat, MatExpr, std::vector<Mat>, std::vector<std::vector<cv::Point> >, std::vector<bool>,
-          std::vector<int>, std::vector<double>, double, cv::Scalar> {
-
-	static get_type get(lua_State *l, int index) {
-		return util::ConvertibleRegisterHelper<
-			cv::_InputArray, Mat, MatExpr, std::vector<Mat>, std::vector<std::vector<cv::Point> >, std::vector<bool>,
-			std::vector<int>, std::vector<double>, double, cv::Scalar>::get(l,index);
-	}
-
-};
-
-template <>
-struct lua_type_traits<cv::_InputOutputArray>
-    : util::ConvertibleRegisterHelper<cv::_InputOutputArray, Mat &, MatExpr &,
-                                      std::vector<Mat> > {
-  typedef const _InputOutputArray &push_type;
-  static int push(lua_State *l, push_type v) {
-    return util::one_push(l, kaguya::NilValue());
-  }
-};
-
-template <>
-struct lua_type_traits<cv::MatExpr> {
-  typedef void Registerable;
-  typedef cv::Mat push_type;
-  typedef cv::MatExpr get_type;
-  typedef cv::MatExpr type;
-
-  static bool strictCheckType(lua_State *l, int index) {
-    return object_wrapper<type>(l, index, false) != 0;
-  }
-  static bool checkType(lua_State *l, int index) {
-    return object_wrapper<type>(l, index) != 0 || lua_isnil(l, index);
-  }
-  static get_type get(lua_State *l, int index) {
-    get_type *pointer = get_pointer(l, index, types::typetag<get_type>());
-    if (!pointer) {
-      throw LuaTypeMismatch();
-    }
-    return *pointer;
-  }
-  static int push(lua_State *l, push_type v) { return util::one_push(l, v); }
-};
-template <>
-struct lua_type_traits<const cv::MatExpr &> : lua_type_traits<cv::MatExpr> {};
-
-template <>
-struct lua_type_traits<cv::_OutputArray>
-    : util::ConvertibleRegisterHelper<cv::_OutputArray, Mat &, MatExpr &,
-                                      std::vector<Mat> > {};
-template <>
-struct lua_type_traits<cv::String>
-    : util::ConvertibleRegisterHelper<cv::String, const char *> {
-  typedef const cv::String &push_type;
-  static int push(lua_State *l, push_type str) {
-    lua_pushlstring(l, str.c_str(), str.length());
-    return 1;
-  }
-};
-
-KAGUYA_TABLE_MAPPING_TYPE2(cv::Size, int, width, height)
-KAGUYA_TABLE_MAPPING_TYPE2(cv::Point, int, x, y)
-KAGUYA_TABLE_MAPPING_TYPE2(cv::Range, int, start, end)
-KAGUYA_TABLE_MAPPING_TYPE4(cv::Rect, int, x, y, height, width)
-
-template <typename T>
-struct lua_type_traits<cv::Ptr<T> > {
-  typedef const cv::Ptr<T> &push_type;
-  typedef cv::Ptr<T> get_type;
-  typedef cv::Ptr<T> type;
-
-  static bool strictCheckType(lua_State *l, int index) {
-    return object_wrapper<type>(l, index, false) != 0;
-  }
-  static bool checkType(lua_State *l, int index) {
-    return object_wrapper<type>(l, index) != 0 || lua_isnil(l, index);
-  }
-  static get_type get(lua_State *l, int index) {
-    type *pointer = get_pointer(l, index, types::typetag<type>());
-    if (!pointer) {
-      throw LuaTypeMismatch();
-    }
-    return *pointer;
-  }
-
-  static int push(lua_State *l, push_type v) {
-    if (v) {
-      typedef ObjectSmartPointerWrapper<type> wrapper_type;
-      void *storage = lua_newuserdata(l, sizeof(wrapper_type));
-      new (storage) wrapper_type(std::forward<push_type>(v));
-      class_userdata::setmetatable<T>(l);
-    } else {
-      lua_pushnil(l);
-    }
-    return 1;
-  }
-};
-}
+#include "cv_bind_type_traits.hpp"
 
 namespace gen_wrap_cv {
 using namespace cv;
@@ -277,6 +172,182 @@ identity<void (cv::Mat::*)(const cv::Mat &)>::type push_back =
 
 std::vector<int> size_getter(const cv::Mat *m) {
   return std::vector<int>(m->size.p, m->size.p + m->dims);
+}
+
+template <typename T, typename... index>
+kaguya::AnyDataPusher at_depth_wrap(const cv::Mat &m, index... i) {
+  switch (m.channels()) {
+    case 1:
+      return T(m.at<T>(i...));
+#define CASE_CHANNEL(NUM) \
+  case NUM:               \
+    return cv::Vec<T, NUM>(m.at<cv::Vec<T, NUM> >(i...))
+      CASE_CHANNEL(2);
+      CASE_CHANNEL(3);
+      CASE_CHANNEL(4);
+      CASE_CHANNEL(5);
+      CASE_CHANNEL(6);
+      CASE_CHANNEL(7);
+      CASE_CHANNEL(8);
+      CASE_CHANNEL(9);
+      CASE_CHANNEL(10);
+#undef CASE_CHANNEL
+  }
+  throw kaguya::LuaTypeMismatch();
+}
+
+template <typename... index>
+kaguya::AnyDataPusher at_wrap(const cv::Mat &m, index... i) {
+  switch (m.depth()) {
+    case CV_8U:
+      return at_depth_wrap<uint8_t>(m, i...);
+    case CV_8S:
+      return at_depth_wrap<int8_t>(m, i...);
+    case CV_16U:
+      return at_depth_wrap<uint16_t>(m, i...);
+    case CV_16S:
+      return at_depth_wrap<int16_t>(m, i...);
+    case CV_32S:
+      return at_depth_wrap<int32_t>(m, i...);
+    case CV_32F:
+      return at_depth_wrap<float>(m, i...);
+    case CV_64F:
+      return at_depth_wrap<double>(m, i...);
+  }
+  throw kaguya::LuaTypeMismatch();
+}
+
+kaguya::AnyDataPusher at_1(const cv::Mat &m, int x) { return at_wrap(m, x); }
+kaguya::AnyDataPusher at_2(const cv::Mat &m, int x, int y) {
+  return at_wrap(m, x, y);
+}
+kaguya::AnyDataPusher at_point(const cv::Mat &m, cv::Point index) {
+  return at_wrap(m, index);
+}
+kaguya::AnyDataPusher at_array(const cv::Mat &m, std::vector<int> index) {
+  return at_wrap(m, index.data());
+}
+
+template <typename T, typename... index>
+void set_depth_wrap(cv::Mat &m, const kaguya::LuaStackRef &v, index... i) {
+  switch (m.channels()) {
+#define CASE_CHANNEL(NUM)                                     \
+  case NUM:                                                   \
+    m.at<cv::Vec<T, NUM> >(i...) = v.get<cv::Vec<T, NUM> >(); \
+    return
+    CASE_CHANNEL(1);
+    CASE_CHANNEL(2);
+    CASE_CHANNEL(3);
+    CASE_CHANNEL(4);
+    CASE_CHANNEL(5);
+    CASE_CHANNEL(6);
+    CASE_CHANNEL(7);
+    CASE_CHANNEL(8);
+    CASE_CHANNEL(9);
+    CASE_CHANNEL(10);
+#undef CASE_CHANNEL
+  }
+  throw kaguya::LuaTypeMismatch();
+}
+
+template <typename... index>
+void set_wrap(cv::Mat &m, const kaguya::LuaStackRef &v, index... i) {
+  switch (m.depth()) {
+    case CV_8U:
+      return set_depth_wrap<uint8_t>(m, v, i...);
+    case CV_8S:
+      return set_depth_wrap<int8_t>(m, v, i...);
+    case CV_16U:
+      return set_depth_wrap<uint16_t>(m, v, i...);
+    case CV_16S:
+      return set_depth_wrap<int16_t>(m, v, i...);
+    case CV_32S:
+      return set_depth_wrap<int32_t>(m, v, i...);
+    case CV_32F:
+      return set_depth_wrap<float>(m, v, i...);
+    case CV_64F:
+      return set_depth_wrap<double>(m, v, i...);
+  }
+  throw kaguya::LuaTypeMismatch();
+}
+void set_1(cv::Mat &m, int x, kaguya::LuaStackRef v) { set_wrap(m, v, x); }
+void set_2(cv::Mat &m, int x, int y, kaguya::LuaStackRef v) {
+  set_wrap(m, v, x, y);
+}
+void set_point(cv::Mat &m, cv::Point index, kaguya::LuaStackRef v) {
+  set_wrap(m, v, index);
+}
+void set_array(cv::Mat &m, std::vector<int> index, kaguya::LuaStackRef v) {
+  set_wrap(m, v, index.data());
+}
+
+int Mat_index_function(lua_State *L) {
+  static const int table = 1;
+  static const int key = 2;
+  lua_getmetatable(L, table);
+  const int metatable = lua_gettop(L);
+
+  if (lua_type(L, key) != LUA_TSTRING) {
+    int type = kaguya::compat::lua_getfield_rtype(L, metatable, "at");
+    if (type == LUA_TFUNCTION) {
+      lua_pushvalue(L, table);
+      lua_pushvalue(L, key);
+      lua_call(L, 2, 1);
+      return 1;
+    }
+  }
+  const char *strkey = lua_tostring(L, key);
+
+  if (lua_type(L, 1) == LUA_TUSERDATA &&
+      kaguya::Metatable::is_property_key(strkey)) {
+    int type = kaguya::compat::lua_getfield_rtype(
+        L, metatable, (KAGUYA_PROPERTY_PREFIX + std::string(strkey)).c_str());
+    if (type == LUA_TFUNCTION) {
+      lua_pushvalue(L, table);
+      lua_call(L, 1, 1);
+      return 1;
+    }
+  }
+  lua_pushvalue(L, key);
+  lua_gettable(L, metatable);
+  if (lua_type(L, -1) != LUA_TNIL) {
+    return 1;
+  }
+  return 1;
+}
+int Mat_newindex_function(lua_State *L) {
+  static const int table = 1;
+  static const int key = 2;
+  static const int value = 3;
+
+  lua_getmetatable(L, table);
+  const int metatable = lua_gettop(L);
+
+  if (lua_type(L, key) != LUA_TSTRING) {
+    int type = kaguya::compat::lua_getfield_rtype(L, metatable, "set");
+    if (type == LUA_TFUNCTION) {
+      lua_pushvalue(L, table);
+      lua_pushvalue(L, key);
+      lua_pushvalue(L, value);
+      lua_call(L, 3, 1);
+      return 1;
+    }
+  }
+
+  const char *strkey = lua_tostring(L, 2);
+
+  if (lua_type(L, 1) == LUA_TUSERDATA &&
+      kaguya::Metatable::is_property_key(strkey)) {
+    int type = kaguya::compat::lua_getfield_rtype(
+        L, metatable, (KAGUYA_PROPERTY_PREFIX + std::string(strkey)).c_str());
+    if (type == LUA_TFUNCTION) {
+      lua_pushvalue(L, table);
+      lua_pushvalue(L, value);
+      lua_call(L, 2, 0);
+      return 0;
+    }
+  }
+  return 0;
 }
 }  // end of namespace Mat
 }
@@ -491,18 +562,24 @@ void kaguya_manual_bind() {
       .class_function("getStdAllocator", wrap::Mat::getStdAllocator)
       .function("addref", wrap::Mat::addref)
       .function("push_back", wrap::Mat::push_back)
+      .class_function(
+          "at", kaguya::overload(wrap::Mat::at_1, wrap::Mat::at_2,
+                                 wrap::Mat::at_point, wrap::Mat::at_array))
+      .class_function(
+          "set", kaguya::overload(wrap::Mat::set_1, wrap::Mat::set_2,
+                                  wrap::Mat::set_point, wrap::Mat::set_array))
       .property("flags", &cv::Mat::flags)
       .property("dims", &cv::Mat::dims)
       .property("rows", &cv::Mat::rows)
       .property("cols", &cv::Mat::cols)
-      .property("data", &cv::Mat::data)
-      .property("datastart", &cv::Mat::datastart)
-      .property("dataend", &cv::Mat::dataend)
-      .property("datalimit", &cv::Mat::datalimit)
-      .property("allocator", &cv::Mat::allocator)
-      .property("u", &cv::Mat::u)
       .property("size", &wrap::Mat::size_getter)
-      .class_function("__tostring", &kaguya_stringifier<cv::Mat>);
+      .class_function("__tostring", &kaguya_stringifier<cv::Mat>)
+      .add_static_property("__index",
+                           luacfunction(wrap::Mat::Mat_index_function))
+      .add_static_property("__newindex",
+                           luacfunction(wrap::Mat::Mat_newindex_function))
+
+      ;
 
   class_<cv::Scalar>("Scalar")
       .class_function("new", scalar_factory())

@@ -1,3 +1,4 @@
+#include "../src/cv_bind_type_traits.hpp"
 
 extern "C" int luaopen_cv(lua_State* L);
 
