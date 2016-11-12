@@ -1,6 +1,6 @@
-
-#define KAGUYA_TABLE_MAPPING_TYPE2(TYPE, PROPTYPE, PROP_NAME1, PROP_NAME2) \
-template<> struct lua_type_traits<TYPE> {\
+#pragma once
+#define KAGUYA_TABLE_MAPPING_TEMPLATE_TYPE2(TEMPLATE,TYPE, PROPTYPE, PROP_NAME1, PROP_NAME2) \
+template<TEMPLATE> struct lua_type_traits<TYPE> {\
 typedef TYPE get_type;\
 typedef TYPE push_type;\
   static bool strictCheckType(lua_State* l, int index) {\
@@ -46,10 +46,14 @@ typedef TYPE push_type;\
     lua_rawset(l, -3);\
     return 1;\
   }\
-};
+};\
+template<> struct lua_type_traits<const TYPE&> :lua_type_traits<TYPE>{};
 
-#define KAGUYA_TABLE_MAPPING_TYPE4(TYPE, PROPTYPE, PROP_NAME1, PROP_NAME2, PROP_NAME3, PROP_NAME4) \
-template<> struct lua_type_traits<TYPE> {\
+#define KAGUYA_TABLE_MAPPING_TYPE2(TYPE, PROPTYPE, PROP_NAME1, PROP_NAME2) KAGUYA_TABLE_MAPPING_TEMPLATE_TYPE2(,TYPE, PROPTYPE, PROP_NAME1, PROP_NAME2)
+
+
+#define KAGUYA_TABLE_MAPPING_TEMPLATE_TYPE4(TEMPLATE,TYPE, PROPTYPE, PROP_NAME1, PROP_NAME2, PROP_NAME3, PROP_NAME4) \
+template<TEMPLATE> struct lua_type_traits<TYPE> {\
 typedef TYPE get_type;\
 typedef TYPE push_type;\
   static bool strictCheckType(lua_State* l, int index) {\
@@ -111,7 +115,9 @@ typedef TYPE push_type;\
     lua_rawset(l, -3);\
     return 1;\
   }\
-};
+};\
+template<> struct lua_type_traits<const TYPE&> :lua_type_traits<TYPE> {};
+#define KAGUYA_TABLE_MAPPING_TYPE4(TYPE, PROPTYPE, PROP_NAME1, PROP_NAME2, PROP_NAME3, PROP_NAME4) KAGUYA_TABLE_MAPPING_TEMPLATE_TYPE4(,TYPE, PROPTYPE, PROP_NAME1, PROP_NAME2, PROP_NAME3, PROP_NAME4)
 
 
 template<typename T> std::string kaguya_stringifier(const T& v)
