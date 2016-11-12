@@ -4,6 +4,7 @@ OpenCV binding for Lua
 
 Licensed under [Boost Software License](http://www.boost.org/LICENSE_1_0.txt)
 
+[![Build Status](https://travis-ci.org/satoren/luaOpenCV.svg?branch=master)](https://travis-ci.org/satoren/luaOpenCV)
 
 ## Requirements
 - Lua 5.1 to 5.3 (recommended: 5.3)

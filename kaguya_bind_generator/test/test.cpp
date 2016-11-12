@@ -1,7 +1,6 @@
 
 namespace cv {
 
-void fna(int a);
 
 struct strcta;
 
@@ -66,4 +65,11 @@ enum ENUM_TEST {
   ENUM_B = 2,
   ENUM_C,
 };
+
+
+ struct incomplete_struct;
+
+void fna(int a);
+  void incomplete_struct_fn(incomplete_struct* a) ;
+  void struct_fn(strcta& a) ;
 }

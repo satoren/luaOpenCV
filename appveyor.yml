@@ -1,43 +1,27 @@
 version: 1.0.{build}
-image: Visual Studio 2015
 environment:
-  matrix:
-  - CMAKE_GEN_TYPE: '"Visual Studio 14 2015"'
+  CMAKE_GEN_TYPE: Visual Studio 14 2015
 install:
 - ps: >-
-    if(!(Test-Path -Path third_party\lua-5.3.3 )){
-      choco install 7zip.commandline
-      Invoke-WebRequest  http://www.lua.org/ftp/lua-5.3.3.tar.gz -OutFile lua-5.3.3.tar.gz
-      7z x lua-5.3.3.tar.gz
-      7z x lua-5.3.3.tar
-    }
-cache:
-- third_party\lua-5.3.3
-- third_party\opencvlib
+    choco install 7zip.commandline
+
+    cd third_party
+
+    Invoke-WebRequest  http://www.lua.org/ftp/lua-5.3.3.tar.gz -OutFile lua-5.3.3.tar.gz
+
+    7z x lua-5.3.3.tar.gz
+
+    7z x lua-5.3.3.tar
+
+    cd ../
+
+    git submodule update --init --recursive
+
+    ./opencv_build.bat
+cache: third_party/opencv/build
 build_script:
 - ps: >-
-    git submodule update --init --recursive
-    if(!(Test-Path -Path third_party\opencvlib )){
-      cd third_party\opencv
-      if(!(Test-Path -Path build )){
-        mkdir build
-      }
-      cd build
-      cmake ../ -DCMAKE_INSTALL_PREFIX=..\..\opencvlib -DBUILD_SHARED_LIBS=Off -DBUILD_WITH_STATIC_CRT=Off -G $env:CMAKE_GEN_TYPE
-      cmake --build . --config Release
-      cmake --build . --config Release --target install
-      cd ..\..\..\
-    }
-    if(!(Test-Path -Path build )){
-      mkdir build
-    }
-
-    cd build
-    cmake ../ -DCMAKE_BUILD_TYPE=Release
-    cmake --build .
-    cd build
-
-    cmake ../ -G $env:CMAKE_GEN_TYPE -DLOCAL_LUA_DIRECTORY="lua-5.3.3"
+    cmake . -G $env:CMAKE_GEN_TYPE -DLOCAL_LUA_DIRECTORY="third_party/lua-5.3.3"
 
     cmake --build . --config Release
 test_script:
