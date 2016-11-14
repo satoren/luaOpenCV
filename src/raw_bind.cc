@@ -88,7 +88,7 @@ identity<int (cv::Mat::*)() const>::type type = &cv::Mat::type;
 identity<cv::MatExpr (*)(int, int, int)>::type ones0 = &cv::Mat::ones;
 identity<cv::MatExpr (*)(Size, int)>::type ones1 = &cv::Mat::ones;
 cv::Mat ones2(std::vector<int> size, int type) {
-	return cv::Mat::ones(size.size(), size.data(), type);
+  return cv::Mat::ones(size.size(), size.data(), type);
 }
 auto ones = kaguya::overload(ones0, ones1, ones2);
 KAGUYA_MEMBER_FUNCTION_OVERLOADS_WITH_SIGNATURE(
@@ -126,7 +126,7 @@ auto assignTo = assignTo_wrap_obj();
 identity<cv::MatExpr (*)(int, int, int)>::type zeros0 = &cv::Mat::zeros;
 identity<cv::MatExpr (*)(Size, int)>::type zeros1 = &cv::Mat::zeros;
 cv::Mat zeros2(std::vector<int> size, int type) {
-	return cv::Mat::zeros(size.size(),size.data(), type);
+  return cv::Mat::zeros(size.size(), size.data(), type);
 }
 
 auto zeros = kaguya::overload(zeros0, zeros1, zeros2);
@@ -567,12 +567,12 @@ void kaguya_manual_bind() {
       .class_function("getStdAllocator", wrap::Mat::getStdAllocator)
       .function("addref", wrap::Mat::addref)
       .function("push_back", wrap::Mat::push_back)
+      .class_function("at",
+                      kaguya::overload(wrap::Mat::at_point, wrap::Mat::at_array,
+                                       wrap::Mat::at_1, wrap::Mat::at_2))
       .class_function(
-          "at", kaguya::overload(wrap::Mat::at_1, wrap::Mat::at_2,
-                                 wrap::Mat::at_point, wrap::Mat::at_array))
-      .class_function(
-          "set", kaguya::overload(wrap::Mat::set_1, wrap::Mat::set_2,
-                                  wrap::Mat::set_point, wrap::Mat::set_array))
+          "set", kaguya::overload(wrap::Mat::set_point, wrap::Mat::set_array,
+                                  wrap::Mat::set_1, wrap::Mat::set_2))
       .property("flags", &cv::Mat::flags)
       .property("dims", &cv::Mat::dims)
       .property("rows", &cv::Mat::rows)
