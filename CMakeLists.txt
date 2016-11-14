@@ -42,6 +42,6 @@ if(BUILD_TESTS)
     test/test_draw.cc
     test/test_image.cc)
   target_link_libraries(test_runner ${OpenCV_LIBS} ${LUA_LIBRARIES})
-  add_test(NAME cvbind_test COMMAND test_runner WORKING_DIRECTORY test)
+  add_test(NAME cvbind_test COMMAND test_runner WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 endif(BUILD_TESTS)
