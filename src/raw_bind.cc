@@ -87,7 +87,9 @@ identity<double (cv::Mat::*)(InputArray) const>::type dot = &cv::Mat::dot;
 identity<int (cv::Mat::*)() const>::type type = &cv::Mat::type;
 identity<cv::MatExpr (*)(int, int, int)>::type ones0 = &cv::Mat::ones;
 identity<cv::MatExpr (*)(Size, int)>::type ones1 = &cv::Mat::ones;
-identity<cv::MatExpr (*)(int, const int *, int)>::type ones2 = &cv::Mat::ones;
+cv::Mat ones2(std::vector<int> size, int type) {
+	return cv::Mat::ones(size.size(), size.data(), type);
+}
 auto ones = kaguya::overload(ones0, ones1, ones2);
 KAGUYA_MEMBER_FUNCTION_OVERLOADS_WITH_SIGNATURE(
     getUMat_wrap_obj, cv::Mat, getUMat, 1, 2,
@@ -123,7 +125,10 @@ KAGUYA_MEMBER_FUNCTION_OVERLOADS_WITH_SIGNATURE(assignTo_wrap_obj, cv::Mat,
 auto assignTo = assignTo_wrap_obj();
 identity<cv::MatExpr (*)(int, int, int)>::type zeros0 = &cv::Mat::zeros;
 identity<cv::MatExpr (*)(Size, int)>::type zeros1 = &cv::Mat::zeros;
-identity<cv::MatExpr (*)(int, const int *, int)>::type zeros2 = &cv::Mat::zeros;
+cv::Mat zeros2(std::vector<int> size, int type) {
+	return cv::Mat::zeros(size.size(),size.data(), type);
+}
+
 auto zeros = kaguya::overload(zeros0, zeros1, zeros2);
 KAGUYA_MEMBER_FUNCTION_OVERLOADS_WITH_SIGNATURE(pop_back_wrap_obj, cv::Mat,
                                                 pop_back, 0, 1,

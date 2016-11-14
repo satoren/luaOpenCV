@@ -39,7 +39,8 @@ if(BUILD_TESTS)
   add_executable(test_runner ${GTEST_SRCS} src/raw_bind.cc 
     test/test_main.cc
     test/test_mat.cc
-    test/test_draw.cc)
+    test/test_draw.cc
+    test/test_image.cc)
   target_link_libraries(test_runner ${OpenCV_LIBS} ${LUA_LIBRARIES})
   add_test(NAME cvbind_test COMMAND test_runner)
 

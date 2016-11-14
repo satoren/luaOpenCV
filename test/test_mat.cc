@@ -22,6 +22,9 @@ TEST_F(LuaOpenCVTest, Mat_construct_from_cols_rows) {
   ASSERT_EQ(3, m1.rows);
   ASSERT_EQ(2, m1.dims);
   ASSERT_EQ(6, m1.depth());
+  ASSERT_EQ(10, m1.channels());
+
+  ASSERT_TRUE(lua_("p = m1[0] assert(#p == 10)"));
 }
 TEST_F(LuaOpenCVTest, Mat_construct_with_dims) {
   const int sizes[] = {2, 2, 3, 4};
@@ -40,6 +43,7 @@ TEST_F(LuaOpenCVTest, Mat_construct_with_dims) {
   ASSERT_EQ(4, m1.dims);
   ASSERT_EQ(1, m1.channels());
   ASSERT_EQ(6, m1.depth());
+  ASSERT_TRUE(lua_("p = m1[{0,0,0,0}] assert(type(p) == 'number')"));
 }
 
 TEST_F(LuaOpenCVTest, Mat_construct_with_eye) {
@@ -59,7 +63,7 @@ TEST_F(LuaOpenCVTest, Mat_construct_with_eye) {
   ASSERT_EQ(expected.rows, lua_["m1"]["rows"]);
   ASSERT_EQ(expected.dims, lua_["m1"]["dims"]);
   for (int x = 0; x < expected.cols; x++) {
-    for (int y = 0; y < expected.cols; y++) {
+    for (int y = 0; y < expected.rows; y++) {
       ASSERT_EQ(lua_["m1"][cv::Point(x, y)], expected.at<double>(x, y));
     }
   }
@@ -77,12 +81,24 @@ TEST_F(LuaOpenCVTest, Mat_construct_with_zeros) {
   ASSERT_EQ(expected.size(), m1.size());
   ASSERT_EQ(to_string(expected), to_string(m1));
   for (int x = 0; x < expected.cols; x++) {
-    for (int y = 0; y < expected.cols; y++) {
+    for (int y = 0; y < expected.rows; y++) {
       cv::Vec<uint8_t, 3> a = lua_["m1"][cv::Point(x, y)];
       cv::Vec<uint8_t, 3> e = expected.at<cv::Vec<uint8_t, 3> >(x, y);
       ASSERT_EQ(e, a);
+      ASSERT_EQ(0, a[0]);
+      ASSERT_EQ(0, a[1]);
+      ASSERT_EQ(0, a[2]);
     }
   }
+  ASSERT_TRUE(
+      lua_("for x=0,m1.cols-1 do  "
+           "  for y=0,m1.rows-1 do "
+           "    p = m1[{x,y}]"
+           "    assert(p[1]==0)"
+           "    assert(p[2]==0)"
+           "    assert(p[3]==0)"
+           "  end "
+           "end"));
 }
 TEST_F(LuaOpenCVTest, Mat_construct_with_ones) {
   cv::Mat expected = cv::Mat::ones(3, 3, CV_8UC3);
@@ -104,6 +120,15 @@ TEST_F(LuaOpenCVTest, Mat_construct_with_ones) {
       ASSERT_EQ(e, a);
     }
   }
+  ASSERT_TRUE(
+      lua_("for x=0,m1.cols-1 do  "
+           "  for y=0,m1.rows-1 do "
+           "    p = m1[{x,y}]"
+           "    assert(p[1]==1)"
+           "    assert(p[2]==0)"
+           "    assert(p[3]==0)"
+           "  end "
+           "end"));
 }
 
 TEST_F(LuaOpenCVTest, Mat_initialize_with_ramdom) {
