@@ -39,8 +39,8 @@ TEST_F(LuaOpenCVTest, changing_contrast_and_brightness_of_an_image) {
   bool ret = lua_(
       "image = cv.imread('img/lena_std.png') "
       "img = cv.Mat.zeros(image.size, image:type())  "
-      "for y=0,image.rows do "
-      "  for x=0,image.cols do "
+      "for y=0,image.rows-1 do "
+      "  for x=0,image.cols-1 do "
       "    p = image[{x,y}] "
       "    for c=1,3 do "
       "      p[c]=  math.min(255,math.max(0,alpha * p[c] + beta)) "
