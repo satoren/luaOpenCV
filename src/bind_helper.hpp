@@ -1,59 +1,63 @@
 #pragma once
-#define KAGUYA_TABLE_MAPPING_TEMPLATE_TYPE2(TEMPLATE, TYPE, PROPTYPE,        \
-                                            PROP_NAME1, PROP_NAME2)          \
+#define KAGUYA_TABLE_MAPPING_TEMPLATE_TYPE2(TEMPLATE, TYPE, PROPTYPE, \
+                                            PROP_NAME1, PROP_NAME2)   \
   \
-template<TEMPLATE> struct lua_type_traits<TYPE> {                            \
+template<TEMPLATE> struct lua_type_traits<TYPE> {                     \
     \
-typedef TYPE get_type;                                                       \
+typedef TYPE get_type;                                                \
     \
-typedef TYPE push_type;                                                      \
-    static bool strictCheckType(lua_State* l, int index) {                   \
-      if (lua_type(l, index) != LUA_TTABLE) {                                \
-        return false;                                                        \
-      }                                                                      \
-      LuaStackRef table(l, index);                                           \
-      optional<PROPTYPE> v1 = table[#PROP_NAME1].get<optional<PROPTYPE> >(); \
-      optional<PROPTYPE> v2 = table[#PROP_NAME2].get<optional<PROPTYPE> >(); \
-      if ((!v1 || !v2) && table.size() == 2) {                               \
-        v1 = table[1].get<optional<PROPTYPE> >();                            \
-        v2 = table[2].get<optional<PROPTYPE> >();                            \
-      }                                                                      \
-      return (v1 && v2);                                                     \
-    }                                                                        \
-    static bool checkType(lua_State* l, int index) {                         \
-      return strictCheckType(l, index);                                      \
-    }                                                                        \
-    static get_type get(lua_State* l, int index) {                           \
-      if (lua_type(l, index) != LUA_TTABLE) {                                \
-        throw kaguya::LuaTypeMismatch();                                     \
-      }                                                                      \
-      LuaStackRef table(l, index);                                           \
-      optional<PROPTYPE> v1 = table[#PROP_NAME1].get<optional<PROPTYPE> >(); \
-      optional<PROPTYPE> v2 = table[#PROP_NAME2].get<optional<PROPTYPE> >(); \
-      if (!v1 || !v2) {                                                      \
-        v1 = table[1].get<optional<PROPTYPE> >();                            \
-        v2 = table[2].get<optional<PROPTYPE> >();                            \
-      }                                                                      \
-      if (v1 && v2) {                                                        \
-        get_type ret = get_type();                                           \
-        ret.PROP_NAME1 = *v1;                                                \
-        ret.PROP_NAME2 = *v2;                                                \
-        return ret;                                                          \
-      }                                                                      \
-      throw kaguya::LuaTypeMismatch();                                       \
-    }                                                                        \
-    static int push(lua_State* l, push_type s) {                             \
-      lua_createtable(l, 0, int(2));                                         \
-      util::one_push(l, #PROP_NAME1);                                        \
-      util::one_push(l, s.PROP_NAME1);                                       \
-      lua_rawset(l, -3);                                                     \
-      util::one_push(l, #PROP_NAME2);                                        \
-      util::one_push(l, s.PROP_NAME2);                                       \
-      lua_rawset(l, -3);                                                     \
-      return 1;                                                              \
-    }                                                                        \
+typedef TYPE push_type;                                               \
+    static bool strictCheckType(lua_State* l, int index) {            \
+      if (lua_type(l, index) != LUA_TTABLE) {                         \
+        return false;                                                 \
+      }                                                               \
+      LuaStackRef table(l, index);                                    \
+      optional<PROPTYPE> v1 =                                         \
+          table.getRawField<optional<PROPTYPE> >(#PROP_NAME1);        \
+      optional<PROPTYPE> v2 =                                         \
+          table.getRawField<optional<PROPTYPE> >(#PROP_NAME2);        \
+      if ((!v1 && !v2) && table.size() == 2) {                        \
+        v1 = table.getRawField<optional<PROPTYPE> >(1);               \
+        v2 = table.getRawField<optional<PROPTYPE> >(2);               \
+      }                                                               \
+      return (v1 && v2);                                              \
+    }                                                                 \
+    static bool checkType(lua_State* l, int index) {                  \
+      return strictCheckType(l, index);                               \
+    }                                                                 \
+    static get_type get(lua_State* l, int index) {                    \
+      if (lua_type(l, index) != LUA_TTABLE) {                         \
+        throw kaguya::LuaTypeMismatch();                              \
+      }                                                               \
+      LuaStackRef table(l, index);                                    \
+      optional<PROPTYPE> v1 =                                         \
+          table.getRawField<optional<PROPTYPE> >(#PROP_NAME1);        \
+      optional<PROPTYPE> v2 =                                         \
+          table.getRawField<optional<PROPTYPE> >(#PROP_NAME2);        \
+      if (!v1 && !v2) {                                               \
+        v1 = table.getRawField<optional<PROPTYPE> >(1);               \
+        v2 = table.getRawField<optional<PROPTYPE> >(2);               \
+      }                                                               \
+      if (v1 && v2) {                                                 \
+        get_type ret = get_type();                                    \
+        ret.PROP_NAME1 = *v1;                                         \
+        ret.PROP_NAME2 = *v2;                                         \
+        return ret;                                                   \
+      }                                                               \
+      throw kaguya::LuaTypeMismatch();                                \
+    }                                                                 \
+    static int push(lua_State* l, push_type s) {                      \
+      lua_createtable(l, 0, int(2));                                  \
+      util::one_push(l, #PROP_NAME1);                                 \
+      util::one_push(l, s.PROP_NAME1);                                \
+      lua_rawset(l, -3);                                              \
+      util::one_push(l, #PROP_NAME2);                                 \
+      util::one_push(l, s.PROP_NAME2);                                \
+      lua_rawset(l, -3);                                              \
+      return 1;                                                       \
+    }                                                                 \
   \
-};                                                                           \
+};                                                                    \
   \
 template<> struct lua_type_traits<const TYPE&> : lua_type_traits<TYPE> {};
 
