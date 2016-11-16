@@ -59,3 +59,33 @@ TEST_F(LuaOpenCVTest, changing_contrast_and_brightness_of_an_image) {
                        img.begin<uchar>());
   ASSERT_TRUE(eq);
 }
+
+
+TEST_F(LuaOpenCVTest, changing_contrast_and_brightness_of_an_image_with_convertTo) {
+	using namespace cv;
+
+	const double alpha = 1.5;
+	const int beta = 4;
+
+	Mat image = imread("img/lena_std.png");
+	Mat expected;
+	image.convertTo(expected, -1, alpha, beta);
+
+	lua_["alpha"] = alpha;
+	lua_["beta"] = beta;
+	bool ret = lua_(
+		"original = cv.imread('img/lena_std.png') "
+		"img = cv.Mat() "
+		"original:convertTo(img,-1,alpha,beta) "
+	);
+
+	ASSERT_TRUE(ret);
+	cv::Mat img = lua_["img"];
+
+//	 cv::imshow("test", img);
+//	 cv::waitKey(0);
+
+	bool eq = std::equal(expected.begin<uchar>(), expected.end<uchar>(),
+		img.begin<uchar>());
+	ASSERT_TRUE(eq);
+}

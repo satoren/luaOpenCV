@@ -10,27 +10,26 @@ using namespace cv;
 template <>
 struct lua_type_traits<cv::_InputArray>
     : util::ConvertibleRegisterHelper<
-          cv::_InputArray, Mat, MatExpr, std::vector<Mat>,
+	util::ConvertibleRegisterHelperProxy<cv::_InputArray>, Mat, MatExpr, cv::Scalar, std::vector<Mat>,
           std::vector<std::vector<cv::Point> >, std::vector<bool>,
-          std::vector<int>, std::vector<double>, double, cv::Scalar> {
-  static get_type get(lua_State *l, int index) {
-    return util::ConvertibleRegisterHelper<
-        cv::_InputArray, Mat, MatExpr, std::vector<Mat>,
-        std::vector<std::vector<cv::Point> >, std::vector<bool>,
-        std::vector<int>, std::vector<double>, double, cv::Scalar>::get(l,
-                                                                        index);
-  }
+          std::vector<int>, std::vector<double>, double> {
+
 };
 
 template <>
 struct lua_type_traits<cv::_InputOutputArray>
-    : util::ConvertibleRegisterHelper<cv::_InputOutputArray, Mat &, MatExpr &,
+    : util::ConvertibleRegisterHelper<cv::_InputOutputArray, Mat &,
                                       std::vector<Mat> > {
   typedef const _InputOutputArray &push_type;
   static int push(lua_State *l, push_type v) {
     return util::one_push(l, kaguya::NilValue());
   }
 };
+
+template <>
+struct lua_type_traits<cv::_OutputArray>
+	: util::ConvertibleRegisterHelper<cv::_OutputArray, Mat &, 
+	std::vector<Mat> > {};
 
 template <>
 struct lua_type_traits<cv::MatExpr> {
@@ -57,10 +56,6 @@ struct lua_type_traits<cv::MatExpr> {
 template <>
 struct lua_type_traits<const cv::MatExpr &> : lua_type_traits<cv::MatExpr> {};
 
-template <>
-struct lua_type_traits<cv::_OutputArray>
-    : util::ConvertibleRegisterHelper<cv::_OutputArray, Mat &, MatExpr &,
-                                      std::vector<Mat> > {};
 
 template <typename T, int S>
 struct lua_type_traits<cv::Vec<T, S> > {
@@ -176,3 +171,4 @@ struct lua_type_traits<cv::Ptr<T> > {
   }
 };
 }
+
