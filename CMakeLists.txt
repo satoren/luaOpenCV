@@ -25,7 +25,9 @@ else(MSVC)
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif(MSVC)
 
-add_library(cv SHARED src/raw_bind.cc)
+
+set(LUA_OPENCV_SRCS src/raw_bind.cc src/manual_bind.cc)
+add_library(cv SHARED ${LUA_OPENCV_SRCS})
 target_link_libraries(cv ${OpenCV_LIBS} ${LUA_LIBRARIES})
 
 
@@ -36,11 +38,14 @@ if(BUILD_TESTS)
   include_directories(third_party/googletest/googletest/include)
   include_directories(third_party/googletest/googletest/)
   set(GTEST_SRCS third_party/googletest/googletest/src/gtest-all.cc)
-  add_executable(test_runner ${GTEST_SRCS} src/raw_bind.cc 
+  
+set(LUA_OPENCV_TEST_SRCS 
     test/test_main.cc
     test/test_mat.cc
-    test/test_draw.cc)
+    test/test_draw.cc
+    test/test_image.cc)
+  add_executable(test_runner ${GTEST_SRCS} ${LUA_OPENCV_SRCS} ${LUA_OPENCV_TEST_SRCS})
   target_link_libraries(test_runner ${OpenCV_LIBS} ${LUA_LIBRARIES})
-  add_test(NAME cvbind_test COMMAND test_runner)
+  add_test(NAME cvbind_test COMMAND test_runner WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 endif(BUILD_TESTS)
