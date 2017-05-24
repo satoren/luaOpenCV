@@ -30,7 +30,7 @@ cmake --build . --config Release --target install
 ```
 Building lua library
 ```bash
-cd ..\..\ # return to root of source tree
+cd ..\..\.. # return to root of source tree
 mkdir build
 cd build
 cmake ..\
@@ -46,7 +46,7 @@ And execute sample
 ### On Unix-like Systems(with Unix Makefiles)
 Build and local installation for OpenCV
 ```bash
-cd third_party\opencv
+cd third_party/opencv
 mkdir build
 cd build
 cmake ../ -DCMAKE_INSTALL_PREFIX=../../opencvlib -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=Off
@@ -55,7 +55,7 @@ cmake --build . --target install
 ```
 Building lua library
 ```bash
-cd ../../ # return to root of source tree
+cd ../../.. # return to root of source tree
 mkdir build
 cd build
 cmake ../ -DCMAKE_BUILD_TYPE=Release
