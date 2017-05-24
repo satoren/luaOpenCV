@@ -43,6 +43,7 @@ set(LUA_OPENCV_TEST_SRCS
     test/test_main.cc
     test/test_mat.cc
     test/test_draw.cc
+    test/test_type.cc
     test/test_image.cc)
   add_executable(test_runner ${GTEST_SRCS} ${LUA_OPENCV_SRCS} ${LUA_OPENCV_TEST_SRCS})
   target_link_libraries(test_runner ${OpenCV_LIBS} ${LUA_LIBRARIES})

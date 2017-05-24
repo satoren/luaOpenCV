@@ -590,9 +590,9 @@ void kaguya_manual_bind() {
       .class_function("new", scalar_factory())
       .class_function("__tostring", &kaguya_stringifier<cv::Scalar>);
 
-  function("Point", [](int x, int y) { return cv::Size(x, y); });
+  function("Point", [](int x, int y) { return cv::Point(x, y); });
   function("Size",
-           [](int width, int height) { return cv::Point(width, height); });
+           [](int width, int height) { return cv::Size(width, height); });
   function("Range", [](int start, int end) { return cv::Range(start, end); });
   function("Rect", [](int x, int y, int height, int width) {
     return cv::Rect(x, y, height, width);
