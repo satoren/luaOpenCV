@@ -1,6 +1,7 @@
 # LuaOpenCV
 OpenCV binding for Lua
 
+Experimental. The API may be changed.
 
 Licensed under [Boost Software License](http://www.boost.org/LICENSE_1_0.txt)
 
